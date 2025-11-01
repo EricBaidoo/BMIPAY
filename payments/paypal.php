@@ -1,0 +1,88 @@
+<?php
+require_once __DIR__ . '/../config.php';
+$user_email = isset($_GET['user_email']) ? htmlspecialchars($_GET['user_email']) : '';
+$user_name = isset($_GET['user_name']) ? htmlspecialchars($_GET['user_name']) : '';
+$amount = isset($_GET['amount']) ? htmlspecialchars($_GET['amount']) : '';
+$hash = isset($_GET['hash']) ? $_GET['hash'] : '';
+
+// Validate hash
+function bmi_pay_hash($user_email, $user_name, $amount) {
+    $data = $user_email . '|' . $user_name . '|' . $amount;
+    return hash_hmac('sha256', $data, BMI_PAY_SECRET);
+}
+if (!$user_email || !$user_name || !$amount || !$hash || $hash !== bmi_pay_hash($user_email, $user_name, $amount)) {
+    echo '<div style="max-width:500px;margin:3rem auto;padding:2rem 1.5rem;background:#fff;border-radius:1.2rem;text-align:center;color:#b71c1c;font-weight:600;box-shadow:0 2px 16px rgba(10,23,78,0.07);">Invalid or tampered payment link. Please return to the store and try again.</div>';
+    exit;
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>International Payment - BMI Pay</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="bg-light">
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow-lg p-4 paystack-card">
+        <div class="text-center mb-4">
+            <img src="../assets/logo.png" alt="BMI Pay Logo" class="paystack-logo">
+            <h2 class="mt-3 mb-0">International Payment</h2>
+            <p class="text-muted mb-0">Pay from anywhere in the world</p>
+        </div>
+        <form id="intl-form" onsubmit="return handleInternationalPayment(event)">
+            <div class="mb-3">
+                <label for="email" class="form-label">Your Email</label>
+                <input type="email" class="form-control" id="email" value="<?php echo $user_email; ?>" required>
+            </div>
+            <div class="mb-3">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="name" value="<?php echo $user_name; ?>" required>
+            </div>
+                <label for="amount" class="form-label">Amount (USD)</label>
+                <input type="number" class="form-control" id="amount" required min="1" step="0.01" placeholder="e.g. 50.00">
+            </div>
+            <div class="mb-3">
+                <label for="amount" class="form-label">Amount (USD)</label>
+                <input type="number" class="form-control" id="amount" required min="1" step="0.01" placeholder="e.g. 50.00" value="<?php echo $amount; ?>">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Payment Method</label>
+                <select class="form-select" id="payment_method" required>
+                    <option value="paypal">PayPal</option>
+                    <option value="zelle">Zelle</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Continue to Payment</button>
+        </form>
+        <div id="intl-message" class="mt-3"></div>
+        <div class="text-center mt-3">
+            <a href="../index.php" class="text-decoration-none">&larr; Back to Home</a>
+        </div>
+    </div>
+</div>
+<script>
+function handleInternationalPayment(e) {
+    e.preventDefault();
+    var method = document.getElementById('payment_method').value;
+    var amount = document.getElementById('amount').value;
+    var name = document.getElementById('name').value;
+    var email = document.getElementById('email').value;
+    if (method === 'paypal') {
+        // Replace with your actual PayPal.me or payment link
+        window.open('https://www.paypal.com/paypalme/YOUR_PAYPAL_USERNAME/' + amount, '_blank');
+        document.getElementById('intl-message').innerHTML = '<div class="alert alert-info mt-3">You are being redirected to PayPal to complete your payment.</div>';
+    } else if (method === 'zelle') {
+        document.getElementById('intl-message').innerHTML = `
+        <div class="zelle-instructions mt-3 p-4 text-center">
+            <div class="zelle-title mb-2">Zelle Payment Instructions</div>
+            <div class="zelle-email mb-2"><strong>Send to: <span style="font-size:1.2em;color:#6f42c1">zelle@example.com</span></strong></div>
+            <div class="zelle-note">Include your name and reason for payment in the note.</div>
+        </div>`;
+    }
+    return false;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,270 @@
+.payment-logos {
+    margin-bottom: 1.5rem;
+    gap: 1.2rem !important;
+    flex-wrap: wrap;
+}
+/* 1rem = 16px, so 28px ≈ 1.75rem, 56px ≈ 3.5rem, 4px ≈ 0.25rem */
+.pay-logo-icon {
+    max-height: 1.75rem;
+    max-width: 3.5rem;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: grayscale(0.04) brightness(1.12);
+    transition: filter 0.2s, transform 0.2s;
+    margin: 0 0.25rem;
+    vertical-align: middle;
+}
+.pay-logo-icon:hover {
+    filter: none;
+    transform: scale(1.08);
+}
+/* 2px ≈ 0.125rem, 12px ≈ 0.75rem */
+.zelle-instructions {
+    background: linear-gradient(90deg, #f3e8ff 0%, #e9d8fd 100%);
+    border: 0.125rem solid #6f42c1;
+    border-radius: 1.2rem;
+    color: #3a256a;
+    font-size: 1.08rem;
+    font-weight: 500;
+    box-shadow: 0 0.125rem 0.75rem rgba(111,66,193,0.07);
+}
+/* 4px ≈ 0.25rem, 32px ≈ 2rem, 750px ≈ 46.875rem */
+.zelle-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    box-shadow: 0 0.25rem 2rem rgba(10,23,78,0.10);
+    margin-top: 2.5rem;
+    margin-bottom: 3rem;
+    padding: 3rem 2rem 2.5rem 2rem;
+    max-width: 46.875rem;
+    font-weight: 600;
+    color: #6f42c1;
+}
+.zelle-note {
+    font-size: 1rem;
+    color: #3a256a;
+    margin-top: 0.5rem;
+}
+.main-bg {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%);
+    display: flex;
+    flex-direction: column;
+}
+/* 38px ≈ 2.375rem, 1.1rem stays, 12px ≈ 0.75rem, 2px ≈ 0.125rem, 4px ≈ 0.25rem, 8px ≈ 0.5rem */
+.main-logo {
+    height: 2.375rem;
+    width: auto;
+    margin-right: 1.1rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.125rem 0.75rem rgba(10,23,78,0.10);
+    background: #fff;
+    padding: 0.25rem 0.5rem;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.main-logo:hover {
+    box-shadow: 0 6px 24px rgba(10,23,78,0.18);
+    transform: scale(1.04) rotate(-2deg);
+}
+/* 2px ≈ 0.125rem, 16px ≈ 1rem, 1.2rem stays, 2.2rem stays */
+.main-header {
+    background: rgba(255,255,255,0.95);
+    border-radius: 1.5rem;
+    box-shadow: 0 0.125rem 1rem rgba(10,23,78,0.07);
+    padding: 1.5rem 2.5rem 1.2rem 2.5rem;
+    margin-bottom: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+}
+/* 1.2px ≈ 0.075em, 2px ≈ 0.125rem, 8px ≈ 0.5rem */
+.main-title {
+    font-size: 2.3rem;
+    color: #0a174e;
+    font-weight: 900;
+    letter-spacing: 0.075em;
+    margin-bottom: 0.2rem;
+    text-shadow: 0 0.125rem 0.5rem rgba(10,23,78,0.04);
+}
+/* 0.2px ≈ 0.0125em, 6px ≈ 0.375rem, 10px ≈ 0.625rem, 36px ≈ 2.25rem */
+.main-subtitle {
+    font-size: 1.1rem;
+    color: #3a4a6b;
+    font-weight: 500;
+    letter-spacing: 0.0125em;
+    transform: translateY(-0.375rem) scale(1.035);
+    box-shadow: 0 0.625rem 2.25rem rgba(10,23,78,0.16);
+    margin-top: 0.2rem;
+    text-align: center;
+}
+/* 2px ≈ 0.125rem, 16px ≈ 1rem, 700px ≈ 43.75rem, 0.5rem stays */
+.hero-section {
+    background: #fff;
+    border-radius: 1.5rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 0.125rem 1rem rgba(10,23,78,0.07);
+    margin-top: 2rem;
+    margin-bottom: 2.5rem;
+    padding: 2.5rem 1.5rem 2rem 1.5rem;
+    max-width: 43.75rem;
+    border-radius: 2rem;
+    font-size: 1.08rem;
+    padding: 0.7rem 0;
+}
+/* 0.7rem stays */
+.hero-title {
+    font-size: 1.7rem;
+    font-weight: 700;
+    margin-bottom: 0.7rem;
+    color: #0a174e;
+}
+.hero-desc {
+    color: #3a4a6b;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 6px rgba(10,23,78,0.07);
+    font-size: 1.08rem;
+}
+/* 0.2px ≈ 0.0125em */
+.footer {
+    background: transparent;
+    color: #3a4a6b;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.0125em;
+    margin-top: auto;
+}
+.footer-text {
+    opacity: 0.8;
+}
+.payment-options-row {
+    margin-top: 2.5rem;
+        border-top: 1px solid #e0e7ef;
+        background: #f8fafc;
+}
+/* 4px ≈ 0.25rem, 32px ≈ 2rem, 320px ≈ 20rem */
+.payment-card {
+    border-radius: 1.5rem;
+    box-shadow: 0 0.25rem 2rem rgba(10,23,78,0.10);
+    border: none;
+    transition: transform 0.18s, box-shadow 0.18s;
+    min-height: 20rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient(120deg, #f8fafc 60%, #e0e7ef 100%);
+    margin-bottom: 2rem;
+    padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+    box-sizing: border-box;
+}
+.main-header,
+.main-logo,
+.payment-card {
+    box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+    .main-header {
+        flex-direction: column;
+        padding: 1.2rem 1rem 1rem 1rem;
+        gap: 0.7rem;
+    }
+    .main-logo {
+        height: 1.75rem;
+        max-width: 5rem;
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+    .main-title {
+        font-size: 1.3rem;
+    }
+    .main-subtitle {
+        font-size: 0.98rem;
+    }
+    .payment-card {
+        min-height: 13.75rem;
+        padding: 1rem 0.5rem 0.7rem 0.5rem;
+    }
+    .payment-logos {
+        gap: 0.5rem !important;
+    }
+    .pay-logo-icon {
+        max-height: 0.625rem;
+        max-width: 1.125rem;
+    }
+}
+.payment-card:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 6px 24px rgba(10,23,78,0.13);
+}
+.payment-card .card-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #0a174e;
+}
+.payment-card .btn {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-top: 0.5rem;
+}
+.payment-card .card-text {
+    color: #555;
+    font-size: 1.05rem;
+}
+.payment-card .payment-logo {
+    height: 38px;
+    margin-bottom: 0.7rem;
+}
+.index-header {
+    color: #0a174e;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+body.bg-light {
+    background: linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%);
+}
+.card {
+    border-radius: 1.25rem;
+    border: none;
+}
+.card .form-label {
+    font-weight: 500;
+}
+.card .btn-primary {
+    background: #0a174e;
+    border: none;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+}
+.card .btn-primary:hover {
+    background: #133b88;
+}
+.card img {
+    margin-bottom: 0.5rem;
+}
+.card .text-muted {
+    font-size: 0.95rem;
+}
+.card .form-control:focus {
+    border-color: #0a174e;
+    box-shadow: 0 0 0 0.2rem rgba(10,23,78,.15);
+}
+.card a.text-decoration-none {
+    color: #0a174e;
+    font-size: 0.97rem;
+}
+.card a.text-decoration-none:hover {
+    text-decoration: underline;
+}
+.paystack-card {
+    max-width: 400px;
+    width: 100%;
+}
+.paystack-logo {
+    height: 48px;
+    margin-bottom: 0.5rem;
+}
