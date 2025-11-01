@@ -1,0 +1,22 @@
+# Ignore config with secrets
+config.php
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/editor
+.vscode/
+.idea/
+
+# Node / Composer
+node_modules/
+vendor/
+composer.lock
+
+# logs and temp
+*.log
+tmp/
+
+# PHPStorm meta
+.phpstorm.meta.php
