@@ -39,29 +39,36 @@ $status = isset($txn['status']) ? $txn['status'] : 'success';
 $channel = isset($txn['channel']) ? $txn['channel'] : null;
 $paid_at = isset($txn['paid_at']) ? $txn['paid_at'] : null;
 $customer_email = isset($txn['customer']['email']) ? $txn['customer']['email'] : null;
-$customer_name = isset($txn['customer']['name']) ? $txn['customer']['name'] : null;
+$customer_name = null;
 $purpose = null;
+
+// Extract metadata (primary source for custom fields)
 if (isset($txn['metadata']) && is_array($txn['metadata'])) {
     if (!empty($txn['metadata']['purpose'])) {
         $purpose = $txn['metadata']['purpose'];
     }
     if (!empty($txn['metadata']['custom_fields']) && is_array($txn['metadata']['custom_fields'])) {
         foreach ($txn['metadata']['custom_fields'] as $field) {
-            if (!empty($field['variable_name'])) {
+            if (!empty($field['variable_name']) && !empty($field['value'])) {
                 if ($field['variable_name'] === 'purpose' && !$purpose) {
-                    $purpose = isset($field['value']) ? $field['value'] : null;
+                    $purpose = $field['value'];
                 } elseif ($field['variable_name'] === 'customer_name' && !$customer_name) {
-                    $customer_name = isset($field['value']) ? $field['value'] : null;
+                    $customer_name = $field['value'];
                 }
             }
         }
     }
 }
 
+// Fallback to customer object if not found in metadata
+if (!$customer_name && isset($txn['customer']['name'])) {
+    $customer_name = $txn['customer']['name'];
+}
+
 $db = bmi_pay_db();
 $stmt = $db->prepare('INSERT INTO payments (reference, amount, currency, status, channel, paid_at, customer_email, customer_name, purpose, raw_event)
     VALUES (:reference, :amount, :currency, :status, :channel, :paid_at, :customer_email, :customer_name, :purpose, :raw_event)
-    ON DUPLICATE KEY UPDATE status = VALUES(status), channel = VALUES(channel), paid_at = VALUES(paid_at), purpose = VALUES(purpose), raw_event = VALUES(raw_event)');
+    ON DUPLICATE KEY UPDATE status = VALUES(status), channel = VALUES(channel), paid_at = VALUES(paid_at), customer_name = VALUES(customer_name), purpose = VALUES(purpose), raw_event = VALUES(raw_event)');
 $stmt->execute([
     ':reference' => $reference,
     ':amount' => $amount,
