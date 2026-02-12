@@ -43,7 +43,7 @@ $db_local = [
 	'host' => env_value('DB_LOCAL_HOST', 'localhost'),
 	'name' => env_value('DB_LOCAL_NAME', 'bmipay'),
 	'user' => env_value('DB_LOCAL_USER', 'root'),
-	'pass' => env_value('DB_LOCAL_PASS', ''),
+	'pass' => env_value('DB_LOCAL_PASS', 'root'),
 ];
 $db_live = [
 	'host' => env_value('DB_LIVE_HOST', 'localhost'),
