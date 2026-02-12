@@ -44,11 +44,15 @@ $purpose = null;
 if (isset($txn['metadata']) && is_array($txn['metadata'])) {
     if (!empty($txn['metadata']['purpose'])) {
         $purpose = $txn['metadata']['purpose'];
-    } elseif (!empty($txn['metadata']['custom_fields']) && is_array($txn['metadata']['custom_fields'])) {
+    }
+    if (!empty($txn['metadata']['custom_fields']) && is_array($txn['metadata']['custom_fields'])) {
         foreach ($txn['metadata']['custom_fields'] as $field) {
-            if (!empty($field['variable_name']) && $field['variable_name'] === 'purpose') {
-                $purpose = isset($field['value']) ? $field['value'] : null;
-                break;
+            if (!empty($field['variable_name'])) {
+                if ($field['variable_name'] === 'purpose' && !$purpose) {
+                    $purpose = isset($field['value']) ? $field['value'] : null;
+                } elseif ($field['variable_name'] === 'customer_name' && !$customer_name) {
+                    $customer_name = isset($field['value']) ? $field['value'] : null;
+                }
             }
         }
     }

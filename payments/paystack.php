@@ -87,6 +87,7 @@ if ($purpose_hash) {
 function payWithPaystack(e) {
     e.preventDefault();
     var email = document.getElementById('email').value;
+    var name = document.getElementById('name').value;
     var amount = document.getElementById('amount').value * 100;
     var purpose = document.getElementById('purpose').value;
     var messageDiv = document.getElementById('paystack-message');
@@ -99,6 +100,11 @@ function payWithPaystack(e) {
         metadata: {
             purpose: purpose,
             custom_fields: [
+                {
+                    display_name: 'Full Name',
+                    variable_name: 'customer_name',
+                    value: name
+                },
                 {
                     display_name: 'Purpose',
                     variable_name: 'purpose',
