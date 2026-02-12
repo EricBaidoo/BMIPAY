@@ -3,17 +3,27 @@ require_once __DIR__ . '/../config.php';
 $user_email = isset($_GET['user_email']) ? htmlspecialchars($_GET['user_email']) : '';
 $user_name = isset($_GET['user_name']) ? htmlspecialchars($_GET['user_name']) : '';
 $amount = isset($_GET['amount']) ? htmlspecialchars($_GET['amount']) : '';
+$purpose = isset($_GET['purpose']) ? htmlspecialchars($_GET['purpose']) : '';
 $hash = isset($_GET['hash']) ? $_GET['hash'] : '';
+$purpose_hash = isset($_GET['purpose_hash']) ? $_GET['purpose_hash'] : '';
 
 // Validate hash
 function bmi_pay_hash($user_email, $user_name, $amount) {
     $data = $user_email . '|' . $user_name . '|' . $amount;
     return hash_hmac('sha256', $data, BMI_PAY_SECRET);
 }
-$has_params = $user_email || $user_name || $amount || $hash;
+$has_params = $user_email || $user_name || $amount || $hash || $purpose || $purpose_hash;
 if ($has_params && (!$user_email || !$user_name || !$amount || !$hash || $hash !== bmi_pay_hash($user_email, $user_name, $amount))) {
     echo '<div style="max-width:500px;margin:3rem auto;padding:2rem 1.5rem;background:#fff;border-radius:1.2rem;text-align:center;color:#b71c1c;font-weight:600;box-shadow:0 2px 16px rgba(10,23,78,0.07);">Invalid or tampered payment link. Please return to the store and try again.</div>';
     exit;
+}
+if ($purpose_hash) {
+    $data = $user_email . '|' . $user_name . '|' . $amount . '|' . $purpose;
+    $expected = hash_hmac('sha256', $data, BMI_PAY_SECRET);
+    if (!$purpose || !hash_equals($expected, $purpose_hash)) {
+        echo '<div style="max-width:500px;margin:3rem auto;padding:2rem 1.5rem;background:#fff;border-radius:1.2rem;text-align:center;color:#b71c1c;font-weight:600;box-shadow:0 2px 16px rgba(10,23,78,0.07);">Invalid or tampered payment link. Please return to the store and try again.</div>';
+        exit;
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -61,6 +71,10 @@ if ($has_params && (!$user_email || !$user_name || !$amount || !$hash || $hash !
                         <input type="number" class="form-control" id="amount" required min="1" step="0.01" placeholder="e.g. 50.00" value="<?php echo $amount; ?>">
                     </div>
                     <div class="mb-3">
+                        <label for="purpose" class="form-label">Payment Purpose</label>
+                        <input type="text" class="form-control" id="purpose" placeholder="Offering, Tithes, Bookstore, Donation" value="<?php echo $purpose; ?>" required>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">Payment Method</label>
                         <select class="form-select" id="payment_method" required>
                             <option value="paypal">PayPal</option>
@@ -81,6 +95,7 @@ function handleInternationalPayment(e) {
     var amount = document.getElementById('amount').value;
     var name = document.getElementById('name').value;
     var email = document.getElementById('email').value;
+    var purpose = document.getElementById('purpose').value;
     if (method === 'paypal') {
         // Replace with your actual PayPal.me or payment link
         window.open('https://www.paypal.com/paypalme/YOUR_PAYPAL_USERNAME/' + amount, '_blank');
@@ -90,7 +105,7 @@ function handleInternationalPayment(e) {
         <div class="zelle-instructions mt-3 p-4 text-center">
             <div class="zelle-title mb-2">Zelle Payment Instructions</div>
             <div class="zelle-email mb-2"><strong>Send to: <span style="font-size:1.2em;color:#e0b04a">zelle@example.com</span></strong></div>
-            <div class="zelle-note mb-3">Include your name and reason for payment in the note.</div>
+            <div class="zelle-note mb-3">Include your name and payment purpose in the note.</div>
             <a href="../thanks.php" class="btn btn-primary mt-2">I've Completed Payment</a>
         </div>`;
     }

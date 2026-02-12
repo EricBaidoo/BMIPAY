@@ -43,11 +43,24 @@ $channel = isset($txn['channel']) ? $txn['channel'] : null;
 $paid_at = isset($txn['paid_at']) ? $txn['paid_at'] : null;
 $customer_email = isset($txn['customer']['email']) ? $txn['customer']['email'] : null;
 $customer_name = isset($txn['customer']['name']) ? $txn['customer']['name'] : null;
+$purpose = null;
+if (isset($txn['metadata']) && is_array($txn['metadata'])) {
+    if (!empty($txn['metadata']['purpose'])) {
+        $purpose = $txn['metadata']['purpose'];
+    } elseif (!empty($txn['metadata']['custom_fields']) && is_array($txn['metadata']['custom_fields'])) {
+        foreach ($txn['metadata']['custom_fields'] as $field) {
+            if (!empty($field['variable_name']) && $field['variable_name'] === 'purpose') {
+                $purpose = isset($field['value']) ? $field['value'] : null;
+                break;
+            }
+        }
+    }
+}
 
 $db = bmi_pay_db();
-$stmt = $db->prepare('INSERT INTO payments (reference, amount, currency, status, channel, paid_at, customer_email, customer_name, raw_event)
-    VALUES (:reference, :amount, :currency, :status, :channel, :paid_at, :customer_email, :customer_name, :raw_event)
-    ON DUPLICATE KEY UPDATE status = VALUES(status), channel = VALUES(channel), paid_at = VALUES(paid_at), raw_event = VALUES(raw_event)');
+$stmt = $db->prepare('INSERT INTO payments (reference, amount, currency, status, channel, paid_at, customer_email, customer_name, purpose, raw_event)
+    VALUES (:reference, :amount, :currency, :status, :channel, :paid_at, :customer_email, :customer_name, :purpose, :raw_event)
+    ON DUPLICATE KEY UPDATE status = VALUES(status), channel = VALUES(channel), paid_at = VALUES(paid_at), purpose = VALUES(purpose), raw_event = VALUES(raw_event)');
 $stmt->execute([
     ':reference' => $reference,
     ':amount' => $amount,
@@ -57,6 +70,7 @@ $stmt->execute([
     ':paid_at' => $paid_at,
     ':customer_email' => $customer_email,
     ':customer_name' => $customer_name,
+    ':purpose' => $purpose,
     ':raw_event' => $response,
 ]);
 

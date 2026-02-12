@@ -3,7 +3,9 @@ require_once __DIR__ . '/../config.php';
 $user_email = isset($_GET['user_email']) ? htmlspecialchars($_GET['user_email']) : '';
 $user_name = isset($_GET['user_name']) ? htmlspecialchars($_GET['user_name']) : '';
 $amount = isset($_GET['amount']) ? htmlspecialchars($_GET['amount']) : '';
+$purpose = isset($_GET['purpose']) ? htmlspecialchars($_GET['purpose']) : '';
 $hash = isset($_GET['hash']) ? $_GET['hash'] : '';
+$purpose_hash = isset($_GET['purpose_hash']) ? $_GET['purpose_hash'] : '';
 $selected_method = isset($_GET['method']) && $_GET['method'] === 'mobilemoneyghana' ? 'mobilemoneyghana' : 'card';
 
 // Validate hash
@@ -11,10 +13,18 @@ function bmi_pay_hash($user_email, $user_name, $amount) {
     $data = $user_email . '|' . $user_name . '|' . $amount;
     return hash_hmac('sha256', $data, BMI_PAY_SECRET);
 }
-$has_params = $user_email || $user_name || $amount || $hash;
+$has_params = $user_email || $user_name || $amount || $hash || $purpose || $purpose_hash;
 if ($has_params && (!$user_email || !$user_name || !$amount || !$hash || $hash !== bmi_pay_hash($user_email, $user_name, $amount))) {
     echo '<div style="max-width:500px;margin:3rem auto;padding:2rem 1.5rem;background:#fff;border-radius:1.2rem;text-align:center;color:#b71c1c;font-weight:600;box-shadow:0 2px 16px rgba(10,23,78,0.07);">Invalid or tampered payment link. Please return to the store and try again.</div>';
     exit;
+}
+if ($purpose_hash) {
+    $data = $user_email . '|' . $user_name . '|' . $amount . '|' . $purpose;
+    $expected = hash_hmac('sha256', $data, BMI_PAY_SECRET);
+    if (!$purpose || !hash_equals($expected, $purpose_hash)) {
+        echo '<div style="max-width:500px;margin:3rem auto;padding:2rem 1.5rem;background:#fff;border-radius:1.2rem;text-align:center;color:#b71c1c;font-weight:600;box-shadow:0 2px 16px rgba(10,23,78,0.07);">Invalid or tampered payment link. Please return to the store and try again.</div>';
+        exit;
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -61,6 +71,10 @@ if ($has_params && (!$user_email || !$user_name || !$amount || !$hash || $hash !
                         <label for="amount" class="form-label">Amount (GHS)</label>
                         <input type="number" class="form-control" id="amount" required min="1" step="0.01" placeholder="e.g. 50.00" value="<?php echo $amount; ?>">
                     </div>
+                    <div class="mb-3">
+                        <label for="purpose" class="form-label">Payment Purpose</label>
+                        <input type="text" class="form-control" id="purpose" placeholder="Offering, Tithes, Bookstore, Donation" value="<?php echo $purpose; ?>" required>
+                    </div>
                     <button type="submit" class="btn btn-primary w-100">Continue to Paystack</button>
                 </form>
                 <div id="paystack-message" class="mt-3"></div>
@@ -74,6 +88,7 @@ function payWithPaystack(e) {
     e.preventDefault();
     var email = document.getElementById('email').value;
     var amount = document.getElementById('amount').value * 100;
+    var purpose = document.getElementById('purpose').value;
     var messageDiv = document.getElementById('paystack-message');
     messageDiv.innerHTML = '';
     var handler = PaystackPop.setup({
@@ -81,6 +96,16 @@ function payWithPaystack(e) {
         email: email,
         amount: amount,
         currency: 'GHS',
+        metadata: {
+            purpose: purpose,
+            custom_fields: [
+                {
+                    display_name: 'Purpose',
+                    variable_name: 'purpose',
+                    value: purpose
+                }
+            ]
+        },
         callback: function(response){
             fetch('../verify_paystack.php?reference=' + response.reference)
                 .then(function() {

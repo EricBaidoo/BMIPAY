@@ -9,6 +9,6 @@ define('PAYSTACK_SECRET_KEY', 'REDACTED');
 
 // Database settings
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'bmipay');
-define('DB_USER', 'root');
-define('DB_PASS', 'root');
+define('DB_NAME', 'u145148023_bmipay');
+define('DB_USER', 'u145148023_bmi_admin2');
+define('DB_PASS', 'REDACTED');
