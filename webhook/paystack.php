@@ -3,12 +3,19 @@ require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/db.php';
 
 $payload = file_get_contents('php://input');
+
+// Log webhook calls for debugging
+$log_file = __DIR__ . '/../webhook_debug.log';
+file_put_contents($log_file, "\n\n=== WEBHOOK CALL " . date('Y-m-d H:i:s') . " ===\n", FILE_APPEND);
+file_put_contents($log_file, "Payload: " . $payload . "\n", FILE_APPEND);
+
 $signature = isset($_SERVER['HTTP_X_PAYSTACK_SIGNATURE']) ? $_SERVER['HTTP_X_PAYSTACK_SIGNATURE'] : '';
 $computed = hash_hmac('sha512', $payload, PAYSTACK_SECRET_KEY);
 
 if (!$signature || !hash_equals($computed, $signature)) {
     http_response_code(400);
     echo 'Invalid signature';
+    file_put_contents($log_file, "Error: Invalid signature\n", FILE_APPEND);
     exit;
 }
 
@@ -16,12 +23,14 @@ $data = json_decode($payload, true);
 if (!is_array($data) || !isset($data['event'])) {
     http_response_code(400);
     echo 'Invalid payload';
+    file_put_contents($log_file, "Error: Invalid payload\n", FILE_APPEND);
     exit;
 }
 
 if ($data['event'] !== 'charge.success' || !isset($data['data'])) {
     http_response_code(200);
     echo 'Ignored';
+    file_put_contents($log_file, "Info: Event ignored (not charge.success)\n", FILE_APPEND);
     exit;
 }
 
@@ -30,6 +39,7 @@ $reference = isset($txn['reference']) ? $txn['reference'] : null;
 if (!$reference) {
     http_response_code(400);
     echo 'Missing reference';
+    file_put_contents($log_file, "Error: Missing reference\n", FILE_APPEND);
     exit;
 }
 
@@ -41,6 +51,10 @@ $paid_at = isset($txn['paid_at']) ? $txn['paid_at'] : null;
 $customer_email = isset($txn['customer']['email']) ? $txn['customer']['email'] : null;
 $customer_name = null;
 $purpose = null;
+
+file_put_contents($log_file, "Email: $customer_email\n", FILE_APPEND);
+file_put_contents($log_file, "Customer object: " . json_encode($txn['customer'] ?? []) . "\n", FILE_APPEND);
+file_put_contents($log_file, "Metadata: " . json_encode($txn['metadata'] ?? []) . "\n", FILE_APPEND);
 
 // Extract metadata (primary source for custom fields)
 if (isset($txn['metadata']) && is_array($txn['metadata'])) {
@@ -65,6 +79,8 @@ if (!$customer_name && isset($txn['customer']['name'])) {
     $customer_name = $txn['customer']['name'];
 }
 
+file_put_contents($log_file, "Extracted Name: $customer_name | Purpose: $purpose\n", FILE_APPEND);
+
 $db = bmi_pay_db();
 $stmt = $db->prepare('INSERT INTO payments (reference, amount, currency, status, channel, paid_at, customer_email, customer_name, purpose, raw_event)
     VALUES (:reference, :amount, :currency, :status, :channel, :paid_at, :customer_email, :customer_name, :purpose, :raw_event)
@@ -81,6 +97,8 @@ $stmt->execute([
     ':purpose' => $purpose,
     ':raw_event' => $payload,
 ]);
+
+file_put_contents($log_file, "DB Updated: $reference with name=$customer_name\n", FILE_APPEND);
 
 http_response_code(200);
 echo 'OK';
