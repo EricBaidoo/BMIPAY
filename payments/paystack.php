@@ -61,13 +61,6 @@ if ($has_params && (!$user_email || !$user_name || !$amount || !$hash || $hash !
                         <label for="amount" class="form-label">Amount (GHS)</label>
                         <input type="number" class="form-control" id="amount" required min="1" step="0.01" placeholder="e.g. 50.00" value="<?php echo $amount; ?>">
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Payment Method</label>
-                        <select class="form-select" id="payment_method" required>
-                            <option value="card" <?php if ($selected_method === 'card') echo 'selected'; ?>>Card</option>
-                            <option value="mobilemoneyghana" <?php if ($selected_method === 'mobilemoneyghana') echo 'selected'; ?>>Mobile Money (All Networks)</option>
-                        </select>
-                    </div>
                     <button type="submit" class="btn btn-primary w-100">Continue to Paystack</button>
                 </form>
                 <div id="paystack-message" class="mt-3"></div>
@@ -81,7 +74,6 @@ function payWithPaystack(e) {
     e.preventDefault();
     var email = document.getElementById('email').value;
     var amount = document.getElementById('amount').value * 100;
-    var paymentMethod = document.getElementById('payment_method').value;
     var messageDiv = document.getElementById('paystack-message');
     messageDiv.innerHTML = '';
     var handler = PaystackPop.setup({
@@ -89,9 +81,8 @@ function payWithPaystack(e) {
         email: email,
         amount: amount,
         currency: 'GHS',
-        channels: [paymentMethod],
         callback: function(response){
-            messageDiv.innerHTML = '<div class="alert alert-success">Payment successful! Reference: ' + response.reference + '</div>';
+            window.location.href = '../thanks.php?reference=' + response.reference;
         },
         onClose: function(){
             messageDiv.innerHTML = '<div class="alert alert-warning">Transaction was not completed.</div>';

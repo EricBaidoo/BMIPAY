@@ -84,13 +84,14 @@ function handleInternationalPayment(e) {
     if (method === 'paypal') {
         // Replace with your actual PayPal.me or payment link
         window.open('https://www.paypal.com/paypalme/YOUR_PAYPAL_USERNAME/' + amount, '_blank');
-        document.getElementById('intl-message').innerHTML = '<div class="alert alert-info mt-3">You are being redirected to PayPal to complete your payment.</div>';
+        document.getElementById('intl-message').innerHTML = '<div class="alert alert-info mt-3">PayPal opened in a new tab. After completing payment, <a href="../thanks.php" class="alert-link">click here to return</a>.</div>';
     } else if (method === 'zelle') {
         document.getElementById('intl-message').innerHTML = `
         <div class="zelle-instructions mt-3 p-4 text-center">
             <div class="zelle-title mb-2">Zelle Payment Instructions</div>
-            <div class="zelle-email mb-2"><strong>Send to: <span style="font-size:1.2em;color:#6f42c1">zelle@example.com</span></strong></div>
-            <div class="zelle-note">Include your name and reason for payment in the note.</div>
+            <div class="zelle-email mb-2"><strong>Send to: <span style="font-size:1.2em;color:#e0b04a">zelle@example.com</span></strong></div>
+            <div class="zelle-note mb-3">Include your name and reason for payment in the note.</div>
+            <a href="../thanks.php" class="btn btn-primary mt-2">I've Completed Payment</a>
         </div>`;
     }
     return false;
