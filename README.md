@@ -6,6 +6,17 @@ Security notes
 - The project expects a `config.php` with a secret key. Keep `config.php` out of version control (it's in `.gitignore`).
 - The platform validates an HMAC hash on incoming payment links to ensure name/email/amount were not tampered with.
 
+Integration flow (BMI Store -> BMI Pay)
+- BMI Store creates a hash from `name + email + amount + secret key` and sends the values plus the hash to BMIPAY.
+- BMIPAY recreates the hash using the same shared secret.
+- If the hashes match, the data is authentic; if someone changed the amount, the hashes will not match.
+
+Set the same shared secret key in both systems
+- BMI Store: `config.php`
+- BMIPAY: `config.php` (this repo)
+
+The secret key should be a long, random string shared only between both systems and never exposed to users.
+
 Files of interest
 - `index.php` — home/entry page. Accepts `user_name`, `user_email`, `amount` as URL parameters and builds signed links to payment pages.
 - `payments/paystack.php` — Paystack/mobile money form and verification.
