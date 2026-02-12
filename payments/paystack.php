@@ -82,7 +82,13 @@ function payWithPaystack(e) {
         amount: amount,
         currency: 'GHS',
         callback: function(response){
-            window.location.href = '../thanks.php?reference=' + response.reference;
+            fetch('../verify_paystack.php?reference=' + response.reference)
+                .then(function() {
+                    window.location.href = '../thanks.php?reference=' + response.reference;
+                })
+                .catch(function() {
+                    window.location.href = '../thanks.php?reference=' + response.reference;
+                });
         },
         onClose: function(){
             messageDiv.innerHTML = '<div class="alert alert-warning">Transaction was not completed.</div>';
