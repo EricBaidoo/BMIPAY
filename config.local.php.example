@@ -1,0 +1,19 @@
+<?php
+
+return [
+    // 'BMI_PAY_SECRET' => 'your-secret',
+    // 'PAYSTACK_PUBLIC_KEY' => 'pk_live_xxx',
+    // 'PAYSTACK_SECRET_KEY' => 'sk_live_xxx',
+    // 'db_local' => [
+    //     'host' => 'localhost',
+    //     'name' => 'bmipay',
+    //     'user' => 'root',
+    //     'pass' => '',
+    // ],
+    // 'db_live' => [
+    //     'host' => 'localhost',
+    //     'name' => 'db_name',
+    //     'user' => 'db_user',
+    //     'pass' => 'db_pass',
+    // ],
+];

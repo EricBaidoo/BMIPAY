@@ -1,5 +1,8 @@
 # Ignore config with secrets
 config.php
+config.local.php
+.env
+.env.*
 
 # OS files
 .DS_Store

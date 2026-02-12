@@ -1,26 +1,65 @@
 <?php
 // config.php
-// Store your secret key here. Keep this file outside web root in production.
-define('BMI_PAY_SECRET', 'mevaGieB1sMI/lThG2Ztwl1vM/M5HnPDjdX/UWHsHZd9SxFBjyd5UaqokXN71xrV');
+// Secrets should be provided via environment variables or config.local.php.
 
-// Paystack keys - LIVE MODE
-define('PAYSTACK_PUBLIC_KEY', 'REDACTED');
-define('PAYSTACK_SECRET_KEY', 'REDACTED');
+function env_value(string $key, string $default = ''): string
+{
+	$value = getenv($key);
+	if ($value === false) {
+		$value = $_ENV[$key] ?? $_SERVER[$key] ?? '';
+	}
+
+	return $value !== '' ? (string) $value : $default;
+}
+
+$local_config_path = __DIR__ . DIRECTORY_SEPARATOR . 'config.local.php';
+$local_overrides = [];
+if (is_file($local_config_path)) {
+	$local_overrides = include $local_config_path;
+	if (!is_array($local_overrides)) {
+		$local_overrides = [];
+	}
+}
+
+$secrets = [
+	'BMI_PAY_SECRET' => env_value('BMI_PAY_SECRET'),
+	'PAYSTACK_PUBLIC_KEY' => env_value('PAYSTACK_PUBLIC_KEY'),
+	'PAYSTACK_SECRET_KEY' => env_value('PAYSTACK_SECRET_KEY'),
+];
+
+foreach ($secrets as $key => $value) {
+	if (array_key_exists($key, $local_overrides)) {
+		$secrets[$key] = (string) $local_overrides[$key];
+	}
+}
+
+define('BMI_PAY_SECRET', $secrets['BMI_PAY_SECRET']);
+define('PAYSTACK_PUBLIC_KEY', $secrets['PAYSTACK_PUBLIC_KEY']);
+define('PAYSTACK_SECRET_KEY', $secrets['PAYSTACK_SECRET_KEY']);
 
 // Database settings
 $is_local = in_array($_SERVER['SERVER_NAME'] ?? '', ['localhost', '127.0.0.1'], true) || PHP_SAPI === 'cli';
 $db_local = [
-	'host' => 'localhost',
-	'name' => 'bmipay',
-	'user' => 'root',
-	'pass' => 'root',
+	'host' => env_value('DB_LOCAL_HOST', 'localhost'),
+	'name' => env_value('DB_LOCAL_NAME', 'bmipay'),
+	'user' => env_value('DB_LOCAL_USER', 'root'),
+	'pass' => env_value('DB_LOCAL_PASS', ''),
 ];
 $db_live = [
-	'host' => 'localhost',
-	'name' => 'u145148023_bmipay',
-	'user' => 'u145148023_bmi_admin2',
-	'pass' => 'REDACTED',
+	'host' => env_value('DB_LIVE_HOST', 'localhost'),
+	'name' => env_value('DB_LIVE_NAME', ''),
+	'user' => env_value('DB_LIVE_USER', ''),
+	'pass' => env_value('DB_LIVE_PASS', ''),
 ];
+
+if (isset($local_overrides['db_local']) && is_array($local_overrides['db_local'])) {
+	$db_local = array_merge($db_local, $local_overrides['db_local']);
+}
+
+if (isset($local_overrides['db_live']) && is_array($local_overrides['db_live'])) {
+	$db_live = array_merge($db_live, $local_overrides['db_live']);
+}
+
 $db = $is_local ? $db_local : $db_live;
 define('DB_HOST', $db['host']);
 define('DB_NAME', $db['name']);
