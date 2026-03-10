@@ -69,3 +69,11 @@ define('DB_PASS', $db['pass']);
 // Admin login for payments page
 define('ADMIN_USER', 'admin');
 define('ADMIN_PASSWORD_HASH', '$2y$10$bXckNOIudSu1pu3f.8WuWuSM/RkHh604mE8V3yCKp/GH1HJ7PJ8Ii');
+
+// Allowlist of domains that BMIPAY may redirect back to after payment.
+// Add every store domain that will send a return_url.
+define('ALLOWED_RETURN_DOMAINS', [
+	'bridgeministriesintl.org',
+	'www.bridgeministriesintl.org',
+	'store.bridgeministriesintl.org',
+]);

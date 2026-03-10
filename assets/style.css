@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
     --ink: #0b1f3b;
     --ink-2: #123556;
@@ -16,7 +18,7 @@
 }
 
 body {
-    font-family: "Source Sans 3", "Segoe UI", Tahoma, sans-serif;
+    font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--ink);
     background: radial-gradient(circle at top, #f8fbff 0%, #edf2f6 45%, #e9eef2 100%);
 }
@@ -27,7 +29,7 @@ h3,
 .main-title,
 .hero-title,
 .card-title {
-    font-family: "Space Grotesk", "Segoe UI", Tahoma, sans-serif;
+    font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     letter-spacing: -0.02em;
 }
 
@@ -44,7 +46,7 @@ h3,
 .main-bg::after {
     content: "";
     position: absolute;
-    border-radius: 50%;
+    border-radius: 0;
     pointer-events: none;
     opacity: 0.8;
 }
@@ -69,7 +71,7 @@ h3,
     background: rgba(255, 255, 255, 0.82);
     backdrop-filter: blur(14px);
     border: 1px solid rgba(255, 255, 255, 0.6);
-    border-radius: 1.8rem;
+    border-radius: 0;
     box-shadow: var(--shadow-tight);
     padding: 1.6rem 2.8rem 1.4rem 2.8rem;
     margin-bottom: 2.3rem;
@@ -83,7 +85,7 @@ h3,
 .main-logo {
     height: 2.6rem;
     width: auto;
-    border-radius: 1rem;
+    border-radius: 0;
     background: #fff;
     padding: 0.35rem 0.6rem;
     box-shadow: 0 8px 20px rgba(11, 31, 59, 0.18);
@@ -110,7 +112,7 @@ h3,
 
 .hero-section {
     background: linear-gradient(120deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 242, 232, 0.95) 100%);
-    border-radius: 2rem;
+    border-radius: 0;
     box-shadow: var(--shadow-tight);
     padding: 2.4rem 2rem;
     max-width: 44rem;
@@ -138,7 +140,7 @@ h3,
 
 .payment-card {
     position: relative;
-    border-radius: 1.6rem;
+    border-radius: 0;
     border: 1px solid var(--line);
     box-shadow: var(--shadow-soft);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -219,7 +221,7 @@ h3,
 }
 
 .card {
-    border-radius: 1.4rem;
+    border-radius: 0;
     border: 1px solid rgba(227, 233, 239, 0.85);
 }
 
@@ -234,7 +236,7 @@ h3,
 
 .card .form-control,
 .card .form-select {
-    border-radius: 0.9rem;
+    border-radius: 0;
     border: 1px solid rgba(170, 183, 196, 0.6);
     padding: 0.7rem 0.85rem;
 }
@@ -246,7 +248,7 @@ h3,
 }
 
 .btn {
-    border-radius: 999px;
+    border-radius: 0;
     font-weight: 600;
     letter-spacing: 0.02em;
     padding: 0.65rem 1.2rem;
@@ -321,7 +323,7 @@ h3,
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(227, 233, 239, 0.7);
-    border-radius: 2rem;
+    border-radius: 0;
     box-shadow: var(--shadow-soft);
     padding: 2.4rem;
     position: relative;
@@ -369,7 +371,7 @@ h3,
     font-weight: 600;
     text-decoration: none;
     padding: 0.4rem 1rem;
-    border-radius: 999px;
+    border-radius: 0;
     border: 1px solid rgba(18, 53, 86, 0.2);
     transition: all 0.2s ease;
     white-space: nowrap;
@@ -387,7 +389,7 @@ h3,
 
 .paystack-form-card {
     background: #fff;
-    border-radius: 1.6rem;
+    border-radius: 0;
     border: 1px solid rgba(227, 233, 239, 0.8);
     padding: 1.8rem;
     box-shadow: var(--shadow-tight);
@@ -400,7 +402,7 @@ h3,
 .zelle-instructions {
     background: linear-gradient(120deg, #fff3db 0%, #f4efe7 100%);
     border: 1px solid rgba(224, 176, 74, 0.45);
-    border-radius: 1.5rem;
+    border-radius: 0;
     color: #3a2d1b;
     font-size: 1.05rem;
     font-weight: 500;
@@ -464,7 +466,7 @@ body.bg-light {
 .thanks-reference {
     background: linear-gradient(120deg, rgba(15, 138, 127, 0.08) 0%, rgba(224, 176, 74, 0.08) 100%);
     border: 1px solid rgba(15, 138, 127, 0.2);
-    border-radius: 1.2rem;
+    border-radius: 0;
     padding: 1.4rem 1.6rem;
     margin-bottom: 2rem;
     animation: rise 0.9s ease both;
