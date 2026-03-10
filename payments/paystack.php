@@ -7,14 +7,21 @@ $purpose = isset($_GET['purpose']) ? htmlspecialchars($_GET['purpose']) : '';
 $hash = isset($_GET['hash']) ? $_GET['hash'] : '';
 $purpose_hash = isset($_GET['purpose_hash']) ? $_GET['purpose_hash'] : '';
 $selected_method = isset($_GET['method']) && $_GET['method'] === 'mobilemoneyghana' ? 'mobilemoneyghana' : 'card';
+// Paystack subaccount code — when present, payment is routed to that subaccount
+$subaccount = isset($_GET['subaccount']) ? preg_replace('/[^A-Za-z0-9_]/', '', $_GET['subaccount']) : '';
 
-// Validate hash
-function bmi_pay_hash($user_email, $user_name, $amount) {
+// Validate hash.
+// If a subaccount is provided, the store must have signed email|name|amount|subaccount.
+// Links without a subaccount use the original email|name|amount signature (backward-compatible).
+function bmi_pay_hash($user_email, $user_name, $amount, $subaccount = '') {
     $data = $user_email . '|' . $user_name . '|' . $amount;
+    if ($subaccount !== '') {
+        $data .= '|' . $subaccount;
+    }
     return hash_hmac('sha256', $data, BMI_PAY_SECRET);
 }
 $has_params = $user_email || $user_name || $amount || $hash || $purpose || $purpose_hash;
-if ($has_params && (!$user_email || !$user_name || !$amount || !$hash || $hash !== bmi_pay_hash($user_email, $user_name, $amount))) {
+if ($has_params && (!$user_email || !$user_name || !$amount || !$hash || $hash !== bmi_pay_hash($user_email, $user_name, $amount, $subaccount))) {
     echo '<div style="max-width:500px;margin:3rem auto;padding:2rem 1.5rem;background:#fff;border-radius:1.2rem;text-align:center;color:#b71c1c;font-weight:600;box-shadow:0 2px 16px rgba(10,23,78,0.07);">Invalid or tampered payment link. Please return to the store and try again.</div>';
     exit;
 }
@@ -92,11 +99,15 @@ function payWithPaystack(e) {
     var purpose = document.getElementById('purpose').value;
     var messageDiv = document.getElementById('paystack-message');
     messageDiv.innerHTML = '';
-    var handler = PaystackPop.setup({
+    var config = {
         key: '<?php echo PAYSTACK_PUBLIC_KEY; ?>',
         email: email,
         amount: amount,
         currency: 'GHS',
+        <?php if ($subaccount): ?>
+        subaccount: '<?php echo $subaccount; ?>',
+        bearer: 'account', // main account bears the Paystack transaction fees
+        <?php endif; ?>
         metadata: {
             purpose: purpose,
             custom_fields: [
@@ -124,7 +135,8 @@ function payWithPaystack(e) {
         onClose: function(){
             messageDiv.innerHTML = '<div class="alert alert-warning">Transaction was not completed.</div>';
         }
-    });
+    };
+    var handler = PaystackPop.setup(config);
     handler.openIframe();
 }
 </script>
